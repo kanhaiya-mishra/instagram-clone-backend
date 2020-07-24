@@ -7,10 +7,10 @@ const JWTService = require("../services/jwtService");
 class AuthController {
 
     static signIn(req, res) {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
         let user = {};
-        if (!email || !password || !name) return res.status(422).json({ error: "Required Parameter(s) Missing" });
-        User.findOne({ email })
+        if (!username || !password) return res.status(422).json({ error: "Required Parameter(s) Missing" });
+        User.findOne({ username })
             .then((savedUser) => {
                 if (!savedUser) return res.status(422).json({ error: "Invalid Username or Password" });
                 // decryt password
@@ -19,8 +19,9 @@ class AuthController {
             })
             .then((doMatch) => {
                 if (doMatch) {
-                    const token = JWTService.createToken({ id: user.id, email: user.email });
-                    return res.json({ name: user.name, email: user.email });
+                    const token = JWTService.createToken({ id: user.id, username: user.username });
+                    res.cookie('_SID', JSON.stringify({ key: token }), { maxAge: null, httpOnly: true });
+                    return res.json({ name: user.name, username: user.username });
                 }
                 return res.status(422).json({ error: "Invalid Username or Password" });
             })
@@ -28,21 +29,26 @@ class AuthController {
     }
 
     static signUp(req, res) {
-        const { name, email, password } = req.body;
-        if (!email || !password || !name) return res.status(422).json({ error: "Required Parameter(s) Missing" });
-        User.findOne({ email })
+        const { name, username, password } = req.body;
+        if (!username || !password || !name) return res.status(422).json({ error: "Required Parameter(s) Missing" });
+        User.findOne({ username })
             .then((savedUser) => {
-                if (savedUser) return res.status(422).json({ error: "User already exists with this email" });
+                if (savedUser) return res.status(422).json({ error: "User already exists with this username" });
                 return bcrypt.hash(password, config.SALT_ROUNDS);
             })
             .then((hashedPassword) => {
-                const user = new User({ name, email, password: hashedPassword });
+                const user = new User({ name, username, password: hashedPassword });
                 return user.save();
             })
-            .then((user) => {
-                res.json({ message: "Successfull" });
+            .then(() => {
+                res.json({ message: "Successful" });
             })
             .catch((err) => { console.log(err) })
+    }
+
+    static signOut(req, res) {
+        res.clearCookie('_SID');
+        res.json({ message: "Successful" });
     }
 }
 

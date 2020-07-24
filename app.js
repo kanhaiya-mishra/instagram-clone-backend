@@ -1,7 +1,9 @@
 const express = require('express');
+const cors = require('cors')
 const app = express();
 const config = require('./config');
 const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
 
 mongoose.connect(config.MONGO_URL, {
     useNewUrlParser: true,
@@ -17,6 +19,8 @@ mongoose.connection.on('error', () => {
 require('./models/user');
 require('./models/instaPost');
 
+app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 app.use(require('./routes/auth.routes'));
 
