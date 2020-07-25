@@ -4,13 +4,19 @@ const InstaPost = mongoose.model("InstaPost");
 class InstaPostController {
 
     static createPost(req, res) {
-        const { title, caption } = req.body;
-        if (!title || !caption) return res.status(422).json({ error: "Required Parameter(s) Missing" });
+        const { imageURL, caption } = req.body;
+        if (!imageURL) return res.status(422).json({ error: "Required Parameter(s) Missing" });
         const Post = new InstaPost({
-            title,
+            imageURL,
             caption,
-            postOwner: req.user
+            postOwnerUsername: req.user.username,
+            postOwner: {
+                name: req.user.name,
+                username: req.user.username,
+                profilePicURL: req.user.profilePicURL
+            }
         });
+
         Post.save()
             .then((result) => {
                 if (!result) return res.status(422).json({ error: "Something went wrong, Please try again later." });

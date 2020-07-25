@@ -9,13 +9,21 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    profilePic: {
+    profilePicURL: {
         type: String,
         required: false
     },
     password: {
         type: String,
         required: true
+    },
+    followers: {
+        type: Array,
+        default: []
+    },
+    following: {
+        type: Array,
+        default: []
     }
 })
 

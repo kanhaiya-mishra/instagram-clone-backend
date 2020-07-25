@@ -19,10 +19,18 @@ mongoose.connection.on('error', () => {
 require('./models/user');
 require('./models/instaPost');
 
-app.use(cors());
+var corsOptions = {
+    origin: 'http://localhost:3000',
+    credentials: true,
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(require('./routes/auth.routes'));
+app.use(require('./routes/instaPost.routes'));
+app.use(require('./routes/profile.routes'));
 
 app.get('/', (req, res) => {
     res.send("Instagram Clone");

@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { ObjectId } = mongoose.Schema.Types;
 
 const instaPostSchema = new mongoose.Schema({
-    caption: {
+    imageURL: {
         type: String,
         required: true
     },
-    imageURL: {
+    caption: {
         type: String,
         default: ""
     },
@@ -14,9 +14,13 @@ const instaPostSchema = new mongoose.Schema({
         type: ObjectId,
         ref: "Comment"
     },
+    postOwnerUsername: {
+        type: String,
+        required: true
+    },
     postOwner: {
-        type: ObjectId,
-        ref: "User"
+        type: Object,
+        required: true
     },
     createdOn: {
         type: Date,

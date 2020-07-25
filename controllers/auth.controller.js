@@ -10,7 +10,7 @@ class AuthController {
         const { username, password } = req.body;
         let user = {};
         if (!username || !password) return res.status(422).json({ error: "Required Parameter(s) Missing" });
-        User.findOne({ username })
+        User.findOne({ username }, 'name username followers password following profilePicURL')
             .then((savedUser) => {
                 if (!savedUser) return res.status(422).json({ error: "Invalid Username or Password" });
                 // decryt password
@@ -19,9 +19,16 @@ class AuthController {
             })
             .then((doMatch) => {
                 if (doMatch) {
-                    const token = JWTService.createToken({ id: user.id, username: user.username });
-                    res.cookie('_SID', JSON.stringify({ key: token }), { maxAge: null, httpOnly: true });
-                    return res.json({ name: user.name, username: user.username });
+                    const token = JWTService.createToken({ username: user.username, name: user.name });
+                    res.cookie('_SID', JSON.stringify({ key: token }), { expires: new Date(Date.now() + 604800), httpOnly: true });
+                    const userProfile = {
+                        name: user.name,
+                        profilePicURL: user.profilePicURL,
+                        username: user.username,
+                        followers: user.followers,
+                        following: user.following
+                    };
+                    return res.json(userProfile);
                 }
                 return res.status(422).json({ error: "Invalid Username or Password" });
             })
