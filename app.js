@@ -30,7 +30,6 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(require('./routes/auth.routes'));
 app.use(require('./routes/instaPost.routes'));
-app.use(require('./routes/profile.routes'));
 
 app.get('/', (req, res) => {
     res.send("Instagram Clone");
