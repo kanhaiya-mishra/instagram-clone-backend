@@ -18,6 +18,8 @@ mongoose.connection.on('error', () => {
 
 require('./models/user');
 require('./models/instaPost');
+require('./models/comment');
+require('./models/follower');
 
 var corsOptions = {
     origin: 'http://localhost:3000',
@@ -28,8 +30,7 @@ var corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use(require('./routes/auth.routes'));
-app.use(require('./routes/instaPost.routes'));
+require('./app.routes')(app);
 
 app.get('/', (req, res) => {
     res.send("Instagram Clone");

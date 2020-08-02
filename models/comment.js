@@ -1,18 +1,25 @@
 const mongoose = require('mongoose');
-const { ObjectId } = mongoose.Schema.Types;
 
 const commentSchema = new mongoose.Schema({
-    text: {
+    parentId: {
         type: String,
         required: true
     },
-    postReference: {
-        type: ObjectId,
-        ref: "InstaPost"
+    commentText: {
+        type: String,
+        required: true
     },
-    commentOwner: {
-        type: ObjectId,
-        ref: "User"
+    commentOwnerId: {
+        type: String,
+        required: true
+    },
+    commentOwnerIdUsername: {
+        type: String,
+        required: true
+    },
+    commentOwnerProfilePicURL: {
+        type: String,
+        default: ""
     },
     createdOn: {
         type: Date,

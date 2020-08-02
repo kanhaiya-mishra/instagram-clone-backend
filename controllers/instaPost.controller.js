@@ -26,17 +26,6 @@ class InstaPostController {
             .catch((err) => { console.log(err) });
     }
 
-    // static getParticularPost(req, res) {
-    //     const { id } = req.params;
-    //     if (!id) return res.status(422).json({ error: "Required Parameter(s) Missing" });
-    //     InstaPost.findOne({ _id: id })
-    //         .then((posts) => {
-    //             if (!posts) return res.status(422).json({ error: "Something went wrong, Please try again later." });
-    //             res.json(posts);
-    //         })
-    //         .catch((err) => { console.log(err) });
-    // }
-
     static getPosts(req, res) {
         const { myPosts } = req.params;
         if (myPosts) {

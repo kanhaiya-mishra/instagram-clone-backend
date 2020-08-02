@@ -18,12 +18,12 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     followers: {
-        type: Array,
-        default: []
+        type: Number,
+        default: 0
     },
     following: {
-        type: Array,
-        default: []
+        type: Number,
+        default: 0
     }
 })
 

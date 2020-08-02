@@ -19,8 +19,10 @@ class AuthController {
             })
             .then((doMatch) => {
                 if (doMatch) {
-                    const token = JWTService.createToken({ username: user.username, name: user.name });
-                    res.cookie('_SID', JSON.stringify({ key: token }), { expires: new Date(Date.now() + 604800), httpOnly: true });
+                    const token = JWTService.createToken({ username: user.username, id: user.id });
+                    res.cookie('_SID', JSON.stringify({ key: token }), {
+                        expires: new Date(Date.now() + 604800), httpOnly: true
+                    });
                     const userProfile = {
                         name: user.name,
                         profilePicURL: user.profilePicURL,

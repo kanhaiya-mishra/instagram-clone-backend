@@ -18,15 +18,15 @@ const instaPostSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    postOwner: {
-        type: Object,
-        required: true
-    },
     createdOn: {
         type: Date,
         default: new Date()
     },
     likeCount: {
+        type: Number,
+        default: 0
+    },
+    commentCount: {
         type: Number,
         default: 0
     }
