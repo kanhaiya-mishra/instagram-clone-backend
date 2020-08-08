@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 const InstaPost = mongoose.model("InstaPost");
 const User = mongoose.model("User");
+const Follower = mongoose.model("Follower");
 
 class InstaPostController {
 
@@ -43,6 +44,7 @@ class InstaPostController {
 
     static allUserPosts(req, res) {
         const username = req.params.id;
+        const requestingUser = req.user.username;
         if (!username) return res.status(422).json({ error: "Required Parameter(s) Missing" });
         const userDetails = new Promise((resolve, reject) => {
             resolve(User.findOne({ username }, 'name username followers following'));
@@ -50,14 +52,22 @@ class InstaPostController {
         const userPosts = new Promise((resolve, reject) => {
             resolve(InstaPost.find({ postOwnerUsername: username }));
         });
-        Promise.all([userDetails, userPosts])
+        const isFollowing = new Promise((resolve, reject) => {
+            if (requestingUser === username) {
+                resolve(false);
+            } else {
+                resolve(Follower.findOne({ follower: requestingUser, following: username }));
+            }
+        });
+        Promise.all([userDetails, userPosts, isFollowing])
             .then((values) => {
                 if (!values[0]) return res.status(422).json({ error: "User does not exist!" });
                 const userProfile = {
                     name: values[0].name,
                     username: values[0].username,
                     followers: values[0].followers,
-                    following: values[0].following
+                    following: values[0].following,
+                    isFollowing: values[2]
                 };
                 const instaPosts = values[1];
                 res.json({ userProfile, instaPosts });

@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const InstaPostController = require('../controllers/instaPost.controller');
+const FollowerController = require('../controllers/follower.controller');
 const middleware = require('../services/middlewareService');
 
-router.get('/insta-post', middleware, InstaPostController.getPosts);
-// router.get('/insta-post/:id', middleware, InstaPostController.getParticularPost);
-router.post('/insta-post', middleware, InstaPostController.createPost);
-router.get('/insta-post/user/:id', middleware, InstaPostController.allUserPosts);
+router.put('/follower/:id', middleware, FollowerController.addFollower);
+router.delete('/follower/:id', middleware, FollowerController.deleteFollower);
 
 module.exports = router;
