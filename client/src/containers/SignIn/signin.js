@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './signin.css';
 import { makeStyles } from '@material-ui/core/styles';
-import { TextField, Button } from '@material-ui/core';
+import { TextField, Button, InputAdornment, IconButton } from '@material-ui/core';
 import Toastr from '../../components/snackbar-component/snackbar';
 import { Link, useHistory } from 'react-router-dom';
 import DBLayer from '../../dblayer';
 import UserService from '../../services/user-service';
 import AppLoader from '../../components/app-loader-component/app-loader';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 const useStylesInstagram = makeStyles((theme) => ({
    root: {
@@ -26,9 +28,11 @@ const useStylesInstagram = makeStyles((theme) => ({
 }));
 
 function InstagramTextField(props) {
+
+   const { customInputProp } = props;
    const classes = useStylesInstagram();
 
-   return <TextField InputProps={{ classes, disableUnderline: true }} {...props} />;
+   return <TextField InputProps={{ classes, disableUnderline: true, ...customInputProp }} {...props} />;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -64,8 +68,8 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = () => {
 
    const classes = useStyles();
-   const [username, setUsername] = useState("kanhaiya");
-   const [password, setPassword] = useState("insta-clone");
+   const [username, setUsername] = useState("justClickSignIn");
+   const [password, setPassword] = useState("justClickSignIn");
    const [showLoader, setShowLoader] = useState(false);
    const [showPassword, setShowPassword] = useState(false);
    const toastrRef = useRef();
@@ -94,8 +98,8 @@ const SignIn = () => {
       }
    }
 
-   const changeShowPassword = (event) => {
-      setShowPassword(event.target.value);
+   const changeShowPassword = () => {
+      setShowPassword(!showPassword);
    }
 
    const validateInputData = () => {
@@ -173,7 +177,18 @@ const SignIn = () => {
                            focused: classes.labelFocused
                         }
                      }}
-                     type="password"
+                     customInputProp={{
+                        endAdornment: (
+                           < InputAdornment position="end" >
+                              <IconButton
+                                 aria-label="toggle password visibility"
+                                 onClick={changeShowPassword}
+                              >
+                                 {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                           </InputAdornment>)
+                     }}
+                     type={showPassword ? "text" : "password"}
                      value={password}
                      onChange={changePassword}
                      onKeyPress={ifEnter}
