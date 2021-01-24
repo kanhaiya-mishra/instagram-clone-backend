@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const bcrypt = require('bcrypt');
-const config = require('../config');
+const config = require('../config/dev');
 const JWTService = require("../services/jwtService");
 
 class AuthController {
@@ -58,6 +58,27 @@ class AuthController {
     static signOut(req, res) {
         res.clearCookie('_SID');
         res.json({ message: "Successful" });
+    }
+
+    static getUserByUsername(req, res) {
+        const { id } = req.param;
+        if (!id) return res.status(422).json({ error: "Required Parameter(s) Missing" });
+        User.findOne({ username: id }, 'username')
+            .then((user) => {
+                if (!user) return res.json(false);
+                return res.json(true);
+            })
+            .catch((err) => { console.log(err) })
+    }
+
+    static getAllUsersByUsername(req, res) {
+        const { id } = req.params;
+        if (!id) return res.status(422).json({ error: "Required Parameter(s) Missing" });
+        User.find({ username: { $regex: `.*${id}.*` } }, 'username')
+            .then((users) => {
+                return res.json(users);
+            })
+            .catch((err) => { console.log(err) })
     }
 }
 
