@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors')
 const app = express();
-const config = require('./config/dev');
+const config = require('./config');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 
