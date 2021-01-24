@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const bcrypt = require('bcrypt');
-const config = require('../config/dev');
+const config = require('../config');
 const JWTService = require("../services/jwtService");
 
 class AuthController {
