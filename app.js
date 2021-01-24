@@ -20,6 +20,16 @@ require('./models/instaPost');
 require('./models/comment');
 require('./models/follower');
 
+if (process.env.NODE_ENV !== 'production') {
+   const cors = require('cors');
+   let corsOptions = {
+      origin: 'http://localhost:3000',
+      credentials: true,
+      optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+   }
+   app.use(cors(corsOptions));
+}
+
 app.use(cookieParser());
 app.use(express.json());
 require('./app.routes')(app);

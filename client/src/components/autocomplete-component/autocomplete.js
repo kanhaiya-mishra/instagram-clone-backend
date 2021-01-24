@@ -9,42 +9,35 @@ import { useHistory } from 'react-router-dom';
 
 export default function AutocompleteSearch() {
    const [open, setOpen] = React.useState(false);
+   const [loading, setLoading] = React.useState(false);
    const [options, setOptions] = React.useState([]);
-   const loading = open && options.length === 0;
    const history = useHistory();
 
    React.useEffect(() => {
       const searchBox = document.getElementById('autocomplete-search');
       const debouncedSearch = _.debounce(function (event) {
          if (event.target.value.length > 1) {
+            setLoading(true);
             DBlayer.getAllUsersByUsername(event.target.value)
                .then((result) => {
                   let usernameArray = [];
                   result.data.forEach(item => {
-                     usernameArray.push({ name: item.username });
-                  })
+                     usernameArray.push({ username: item.username });
+                  });
+                  setLoading(false);
                   setOptions(usernameArray);
+               })
+               .catch((err) => {
+                  setLoading(false);
                })
          }
       })
-      searchBox.addEventListener('keydown', debouncedSearch, 500);
+      searchBox.addEventListener('keydown', debouncedSearch, 1000);
       return () => {
          const searchBox = document.getElementById('autocomplete-search');
          searchBox.removeEventListener('keydown', debouncedSearch);
       }
    }, []);
-
-   React.useEffect(() => {
-      let active = true;
-
-      if (!loading) {
-         return undefined;
-      }
-
-      return () => {
-         active = false;
-      };
-   }, [loading]);
 
    React.useEffect(() => {
       if (!open) {
@@ -53,13 +46,19 @@ export default function AutocompleteSearch() {
    }, [open]);
 
    function redirectToUserProfile(username) {
-      debugger;
-      history.push(`/profile/${username}`);
+      if (username) {
+         history.push(`/profile/${username}`);
+      }
    }
 
    return (
       <Autocomplete
          id="autocomplete-search"
+         freeSolo
+         options={options.map((option) => option.username)}
+         onChange={(event, newValue) => {
+            redirectToUserProfile(newValue)
+         }}
          style={{ width: 300 }}
          open={open}
          onOpen={() => {
@@ -68,10 +67,6 @@ export default function AutocompleteSearch() {
          onClose={() => {
             setOpen(false);
          }}
-         getOptionSelected={(option) => redirectToUserProfile(option.name)}
-         getOptionLabel={(option) => option.name}
-         options={options}
-         loading={loading}
          renderInput={(params) => (
             <TextField
                {...params}
